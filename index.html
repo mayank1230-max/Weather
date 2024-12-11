@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="card my-5 shadow border-0">
+                    <div class="card-header">
+                        <h5 class="card-title">Weather Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="post" id="registration">
+
+                            <div class="mb-3">
+                                <label for="city" class="form-label">City<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="city" placeholder="Search by city name"
+                                    required>
+                            </div>
+                            <button type="submit" class="btn btn-primary d-block mx-auto">Search</button>
+                            <div class="mt-2" id="result">
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 my-5">
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <th>Weather data for</th>
+                                <td id="wd"></td>
+                            </tr>
+                            <tr>
+                                <th>Temperature</th>
+                                <td id="temp"></td>
+                            </tr>
+                            <tr>
+                                <th>Weather</th>
+                                <td id="we" class="text-capitalize"></td>
+                            </tr>
+                            <tr>
+                                <th>Humidity</th>
+                                <td id="hum"></td>
+                            </tr>
+                            <tr>
+                                <th>Wind Speed</th>
+                                <td id="ws"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap Js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+
+        // Function to fetch weather data
+        async function fetchWeatherData(city) {
+            const apiKey = "da0e989b7905eef5ac51f37a35677a4f";
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+                }
+                const data = await response.json();
+                displayWeatherData(data);
+            } catch (error) {
+                console.error("Error fetching weather data:", error.message);
+            }
+        }
+
+        // Function to display weather data
+        function displayWeatherData(data) {
+            document.getElementById('wd').innerHTML = data.name;
+            document.getElementById('temp').innerHTML = (data.main.temp - 273.15).toFixed(2) + "°C";
+            document.getElementById('we').innerHTML = data.weather[0].description;
+            document.getElementById('hum').innerHTML = data.main.humidity + "%";
+            document.getElementById('ws').innerHTML = data.wind.speed + "m/s";
+        }
+
+
+        let form = document.getElementById('registration');
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            let city = document.getElementById('city').value;
+
+            fetchWeatherData(city);
+        })
+
+
+
+    </script>
+</body>
+
+</html>
